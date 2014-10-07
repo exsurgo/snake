@@ -1,45 +1,40 @@
-/// <reference path="defs/jquery.d.ts" />
-/// <reference path="defs/underscore.d.ts" />
+var $ = function() {};
 
 /**
  * Defines global game settings
  */
-class Settings {
-    static foodColor = 'orange';
-    static snakeColor = 'green';
-    static mapColor = 'white';
-    static size = 20;
-    static startSpeed = 15;
-    static speedIncrement = 1;
-    static maxSpeed = 40;
-    static startSnakeLength = 8;
-    static scoreMultiplier = 3;
-}
+var Settings = {
+    foodColor: 'orange',
+    snakeColor: 'green',
+    mapColor: 'white',
+    size: 20,
+    startSpeed: 15,
+    speedIncrement: 1,
+    maxSpeed: 40,
+    startSnakeLength: 8,
+    scoreMultiplier: 3
+};
 
 /**
  * Initialized the game and all other classes
  */
 class Game {
 
-    // UI elements
-    scoreBoard : JQuery;
-    content: JQuery;
-
-    // Game objects
-    level: Level;
-    snake: Snake;
-    food: Food;
-
-    // State
-    score = 0;
-    speed = Settings.startSpeed;
-    direction: Direction;
-    interval;
-    over = 0;
-    paused = false;
-
     constructor() {
 
+        // Game objects
+        this.level = null;
+        this.snake = null;
+        this.food = null;
+
+        // State
+        this.score = 0;
+        this.speed = Settings.startSpeed;
+        this.direction = Direction.right;
+        this.interval = null;
+        this.over = 0;
+        this.paused = false;
+        
         // Page ready
         $(() => {
 
@@ -57,7 +52,7 @@ class Game {
             this.level = new Level(this.content);
 
             // Display welcome message
-            Message.show('Welcome to Snake TypeScript', 'press any key or click to start');
+            Message.show('Welcome to Snake ES6/Traceur', 'press any key or click to start');
 
             this.initStartEvents();
 
@@ -106,7 +101,7 @@ class Game {
         this.paused = !this.paused;
     }
 
-    private update() {
+    update() {
 
         if (this.paused) return;
 
@@ -143,14 +138,14 @@ class Game {
 
     }
 
-    private renderAll() {
+    renderAll() {
         this.level.render();
         this.snake.render();
         this.update();
         this.food.render();
     }
 
-    private reset() {
+    reset() {
         this.snake = new Snake(this.level);
         this.food = new Food(this.level);
         this.direction = Direction.right;
@@ -162,14 +157,14 @@ class Game {
         this.score = 0;
     }
 
-    private end() {
+    end() {
         clearInterval(this.interval);
         Message.show('Game Over', 'press any key or click to try again');
         $(document).unbind();
         this.initStartEvents();
     }
 
-    private initStartEvents() {
+    initStartEvents() {
         $(document)
         .click(() => this.startGame())
         .keypress(() => this.startGame());
@@ -180,38 +175,33 @@ class Game {
 /**
  * Represents all possible directions and it's key code
  */
-enum Direction {
-    left = 37,
-    up = 38,
-    right = 39,
-    down = 40
-}
+var Direction = {
+    left: 37,
+    up: 38,
+    right: 39,
+    down: 40
+};
 
 /**
  * Represents key codes
  */
-enum KeyCode {
-    enter = 13,
-    space = 32,
-    left = 37,
-    up = 38,
-    right = 39,
-    down = 40
-}
+var KeyCode = {
+    enter: 13,
+    space: 32,
+    left: 37,
+    up: 38,
+    right: 39,
+    down: 40
+};
 
 /**
  * Represents each graphic point on the level
  */
 class Point {
-
-    x: number;
-    y: number;
-
-    constructor(x: number, y: number) {
+    constructor(x, y) {
         this.x = x;
         this.y = y;
     }
-
 }
 
 /**
@@ -219,22 +209,18 @@ class Point {
  */
 class Level {
 
-    target : JQuery;
-    canvas : HTMLCanvasElement;
-    context : CanvasRenderingContext2D;
-
-    get width() : number {
+    get width() {
         return this.canvas.width;
     }
-    get height(): number {
+    get height() {
         return this.canvas.height;
     }
 
-    constructor(target: JQuery) {
+    constructor(target) {
 
         // Create canvas in target element
         this.target = target;
-        this.canvas = <HTMLCanvasElement>target.append('<canvas>').children()[0];
+        this.canvas = target.append('<canvas>').children()[0];
         this.context = this.canvas.getContext('2d');
 
         // Set width/height
@@ -257,27 +243,28 @@ class Level {
  */
 class Snake {
 
-    level: Level;
-    parts: Point[] = [];
-
-    get head() : Point {
+    get head() {
         return this.parts[0];
     }
 
-    get tail() : Point {
+    get tail() {
         return this.parts[this.parts.length - 1];
     }
 
-    get length() : number {
+    get length() {
         return this.parts.length;
     }
 
-    constructor(level: Level) {
+    constructor(level) {
+
         this.level = level;
+        this.parts = [];
+
         var length = Settings.startSnakeLength;
         for (var i = length - 1; i >= 0; i--) {
             this.parts.push(new Point(i, 0));
         }
+
     }
 
     render() {
@@ -297,7 +284,7 @@ class Snake {
         this.parts.unshift(newTail);
     }
 
-    move(direction : Direction) {
+    move(direction) {
 
         var head = this.head,
             x = head.x,
@@ -316,7 +303,7 @@ class Snake {
 
     // Collision detection
 
-    get wallCollision() : boolean {
+    get wallCollision() {
         var width = this.level.width,
             height = this.level.height,
             size = Settings.size,
@@ -328,7 +315,7 @@ class Snake {
                y <= -1;
     }
 
-    get tailCollision() : boolean {
+    get tailCollision() {
         for (var i = 1; i < this.parts.length; i++) {
             var part = this.parts[i];
             if (this.head.x == part.x && this.head.y == part.y) {
@@ -338,9 +325,8 @@ class Snake {
         return false;
     }
 
-    foodCollision(food : Food) : boolean {
-        var head = this.head,
-            food = food;
+    foodCollision(food) {
+        var head = this.head;
         return head.x == food.x && head.y == food.y;
     }
 
@@ -351,9 +337,7 @@ class Snake {
  */
 class Food extends Point {
 
-    level: Level;
-
-    constructor(level: Level) {
+    constructor(level) {
         this.level = level;
         var size = Settings.size,
             x = Math.round(Math.random() * (level.width - size) / size),
@@ -375,7 +359,7 @@ class Food extends Point {
  */
 class Message {
 
-    static show(title: String, subTitle: String) {
+    static show(title, subTitle) {
         $(document.body).append(
              '<div id="message">' +
                 '<div id="message-modal"></div>' +
