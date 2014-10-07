@@ -1,0 +1,86 @@
+
+html, body, #main {
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+}
+
+button {
+    cursor: pointer;
+    margin-right: 50px;
+}
+
+#header, #content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+#header {
+    height: 30px;
+    border-bottom: 1px solid #aaa;
+    background-color: #cecece;
+    bottom: 30px;
+    padding-top: 3px;
+    text-align: center;
+    background: -moz-linear-gradient(top, rgba(254,255,255,1) 0%, rgba(221,241,249,1) 35%, rgba(160,216,239,1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(254,255,255,1)), color-stop(35%,rgba(221,241,249,1)), color-stop(100%,rgba(160,216,239,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(254,255,255,1) 0%,rgba(221,241,249,1) 35%,rgba(160,216,239,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(254,255,255,1) 0%,rgba(221,241,249,1) 35%,rgba(160,216,239,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(254,255,255,1) 0%,rgba(221,241,249,1) 35%,rgba(160,216,239,1) 100%); /* IE10+ */
+    background: linear-gradient(to bottom, rgba(254,255,255,1) 0%,rgba(221,241,249,1) 35%,rgba(160,216,239,1) 100%); /* W3C */
+}
+
+#content {
+    top: 31px;
+}
+
+#score-board {
+
+}
+
+#message {
+    display: flex;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#message, #message-modal {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 2000;
+}
+
+#message-modal {
+    background-color: #eee;
+    opacity: .5;
+}
+
+#message-panel {
+    text-align: center;
+    position: relative;
+    padding: 50px 30px 30px 30px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 2px 2px #ccc;
+    z-index: 2001;
+    border-radius: 8px;
+}
+
+#message-panel > * {
+    display: inline-block;
+}
