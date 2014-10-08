@@ -130,24 +130,30 @@ class Game {
             var tail = new Point(head.x, head.y);
             snake.parts.push(tail);
 
-            // Increase speed
-            if (this.speed <= Settings.maxSpeed) this.speed += Settings.speedIncrement;
-            clearInterval(this.interval);
-            this.interval = setInterval(() => this.renderAll(), 1000 / this.speed);
-
             // Display score, higher scores for faster speeds
             this.score += Settings.scoreMultiplier * ((this.speed - Settings.startSpeed) + 1);
             this.scoreBoard.text('Score: ' + this.score);
+
+            // Increase speed
+            if (this.speed <= Settings.maxSpeed) this.speed += Settings.speedIncrement;
+            this.animate();
 
         }
 
     }
 
+    private animate() {
+        if (this.interval) clearInterval(this.interval);
+        this.interval = setInterval(() => this.renderAll(), 1000 / this.speed);
+    }
+
     private renderAll() {
-        this.level.render();
-        this.snake.render();
-        this.update();
-        this.food.render();
+        requestAnimationFrame(() => {
+            this.level.render();
+            this.snake.render();
+            this.update();
+            this.food.render();
+        });
     }
 
     private reset() {
@@ -157,9 +163,8 @@ class Game {
         this.scoreBoard.text('Score: 0');
         this.over = 0;
         this.speed = Settings.startSpeed;
-        if (this.interval !== undefined)  clearInterval(this.interval);
-        this.interval = setInterval(() => this.renderAll(), 1000 / this.speed);
         this.score = 0;
+        this.animate();
     }
 
     private end() {

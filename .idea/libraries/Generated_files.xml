@@ -3,10 +3,12 @@
     <properties>
       <sourceFilesUrls>
         <item url="file://$PROJECT_DIR$/es6/app.js" />
+        <item url="file://$PROJECT_DIR$/typescript/app.js" />
       </sourceFilesUrls>
     </properties>
     <CLASSES>
       <root url="file://$PROJECT_DIR$/es6/app.js" />
+      <root url="file://$PROJECT_DIR$/typescript/app.js" />
     </CLASSES>
     <SOURCES />
   </library>

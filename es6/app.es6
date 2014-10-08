@@ -1,4 +1,3 @@
-var $ = function() {};
 
 /**
  * Defines global game settings
@@ -138,11 +137,18 @@ class Game {
 
     }
 
+    animate() {
+        if (this.interval) clearInterval(this.interval);
+        this.interval = setInterval(() => this.renderAll(), 1000 / this.speed);
+    }
+
     renderAll() {
-        this.level.render();
-        this.snake.render();
-        this.update();
-        this.food.render();
+        requestAnimationFrame(() => {
+            this.level.render();
+            this.snake.render();
+            this.update();
+            this.food.render();
+        });
     }
 
     reset() {

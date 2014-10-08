@@ -148,11 +148,20 @@ class Game {
 
   }
 
+  _animate() {
+    if (interval != null) interval.cancel();
+    interval = new Timer.periodic(new Duration(milliseconds: (1000 / speed).round()), (e) {
+      _renderAll();
+    });
+  }
+
   _renderAll() {
-    level.render();
-    snake.render();
-    _update();
-    food.render();
+    window.animationFrame.then((e) {
+      level.render();
+      snake.render();
+      _update();
+      food.render();
+    });
   }
 
   _reset() {

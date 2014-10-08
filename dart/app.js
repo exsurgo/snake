@@ -2989,14 +2989,7 @@ var $$ = {};
       }
     },
     _renderAll$0: function() {
-      var t1, context;
-      this.level.render$0();
-      this.snake.render$0();
-      this._update$0();
-      t1 = this.food;
-      context = t1.level.context;
-      J.set$fillStyle$x(context, "orange");
-      context.fillRect(t1.x * 20, t1.y * 20, 20, 20);
+      C.Window_methods.get$animationFrame(window).then$1(new S.Game__renderAll_closure(this));
     },
     _reset$0: function() {
       this.snake = S.Snake$(this.level);
@@ -3074,6 +3067,20 @@ var $$ = {};
     "^": "Closure:9;this_0",
     call$1: function(e) {
       this.this_0._renderAll$0();
+    }
+  },
+  Game__renderAll_closure: {
+    "^": "Closure:9;this_0",
+    call$1: function(e) {
+      var t1, context;
+      t1 = this.this_0;
+      t1.level.render$0();
+      t1.snake.render$0();
+      t1._update$0();
+      t1 = t1.food;
+      context = t1.level.context;
+      J.set$fillStyle$x(context, "orange");
+      context.fillRect(t1.x * 20, t1.y * 20, 20, 20);
     }
   },
   Game__reset_closure: {
@@ -3617,6 +3624,12 @@ var $$ = {};
     "^": "Object;",
     $isFuture: true
   },
+  _Completer: {
+    "^": "Object;"
+  },
+  _SyncCompleter: {
+    "^": "_Completer;future"
+  },
   _Future: {
     "^": "Object;_state,_zone<,_resultOrListeners,_nextListener<,_onValueCallback,_errorTestCallback,_onErrorCallback,_whenCompleteActionCallback",
     get$_isComplete: function() {
@@ -3641,6 +3654,9 @@ var $$ = {};
       result = H.setRuntimeTypeInfo(new P._Future(0, t1, null, null, f, null, P._registerErrorHandler(onError, t1), null), [null]);
       this._addListener$1(result);
       return result;
+    },
+    then$1: function(f) {
+      return this.then$2$onError(f, null);
     },
     whenComplete$1: function(action) {
       var t1, result;
@@ -6041,6 +6057,38 @@ var $$ = {};
   },
   Window: {
     "^": "EventTarget;",
+    get$animationFrame: function(receiver) {
+      var t1, completer;
+      t1 = P.num;
+      completer = H.setRuntimeTypeInfo(new P._SyncCompleter(P._Future$(t1)), [t1]);
+      this._ensureRequestAnimationFrame$0(receiver);
+      this._requestAnimationFrame$1(receiver, W._wrapZone(new W.Window_animationFrame_closure(completer)));
+      return completer.future;
+    },
+    _requestAnimationFrame$1: function(receiver, callback) {
+      return receiver.requestAnimationFrame(H.convertDartClosureToJS(callback, 1));
+    },
+    _ensureRequestAnimationFrame$0: function(receiver) {
+      if (!!(receiver.requestAnimationFrame && receiver.cancelAnimationFrame))
+        return;
+      (function($this) {
+        var vendors = ['ms', 'moz', 'webkit', 'o'];
+        for (var i = 0; i < vendors.length && !$this.requestAnimationFrame; ++i) {
+          $this.requestAnimationFrame = $this[vendors[i] + 'RequestAnimationFrame'];
+          $this.cancelAnimationFrame = $this[vendors[i] + 'CancelAnimationFrame'] || $this[vendors[i] + 'CancelRequestAnimationFrame'];
+        }
+        if ($this.requestAnimationFrame && $this.cancelAnimationFrame)
+          return;
+        $this.requestAnimationFrame = function(callback) {
+          return window.setTimeout(function() {
+            callback(Date.now());
+          }, 16);
+        };
+        $this.cancelAnimationFrame = function(id) {
+          clearTimeout(id);
+        };
+      })(receiver);
+    },
     toString$0: function(receiver) {
       return receiver.toString();
     },
@@ -6130,6 +6178,15 @@ var $$ = {};
       return [W.Node];
     },
     $isEfficientLength: true
+  },
+  Window_animationFrame_closure: {
+    "^": "Closure:9;completer_0",
+    call$1: function(time) {
+      var t1 = this.completer_0.future;
+      if (t1._state !== 0)
+        H.throwExpression(P.StateError$("Future already completed"));
+      t1._complete$1(time);
+    }
   },
   Interceptor_ListMixin0: {
     "^": "Interceptor+ListMixin;",
@@ -6958,6 +7015,7 @@ C.JSString_methods = J.JSString.prototype;
 C.NodeList_methods = W.NodeList.prototype;
 C.PlainJavaScriptObject_methods = J.PlainJavaScriptObject.prototype;
 C.UnknownJavaScriptObject_methods = J.UnknownJavaScriptObject.prototype;
+C.Window_methods = W.Window.prototype;
 C.C_DynamicRuntimeType = new H.DynamicRuntimeType();
 C.C__JSRandom = new P._JSRandom();
 C.C__RootZone = new P._RootZone();

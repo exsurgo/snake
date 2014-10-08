@@ -1,4 +1,50 @@
-import 'js.jsx';
+/**
+ * Couldn't get JSX compilation to compile, it's a bit of a mess
+ */
+
+class HTML {
+    var document : variant;
+}
+
+class jQueryObject {
+
+    function append(html : String) : jQueryObject {
+        return this;
+    }
+
+    function remove() : void {
+
+    }
+
+    function click(callback : function() : void) : jQueryObject {
+        return this;
+    }
+
+    function keydown(callback : function() : void) : jQueryObject {
+        return this;
+    }
+
+    function keypress(callback : function() : void) : jQueryObject {
+        return this;
+    }
+
+    function unbind() : jQueryObject {
+
+    }
+
+}
+
+class jQuery {
+
+    static function ready(callback : function() : void) : void {
+
+    }
+
+    static function find(selector : variant) : jQueryObject {
+        return new jQueryObject();
+    }
+
+}
 
 /**
  * Defines global game settings
@@ -21,8 +67,8 @@ class Settings {
 class Game {
 
     // UI elements
-    var scoreBoard;
-    var content;
+    var scoreBoard : variant;
+    var content : variant;
 
     // Game objects
     var level: Level;
@@ -32,31 +78,31 @@ class Game {
     // State
     var score = 0;
     var speed = Settings.startSpeed;
-    var direction: Direction;
-    var interval;
-    var over = 0;
+    var direction : variant;
+    var interval : variant;
+    var over  = 0;
     var paused = false;
 
-    Game() {
+    function constructor() {
 
         // Page ready
-        $(() => {
+        jQuery.ready(function() {
 
             // Create elements
-            $(document.body).append(
+            jQuery.find(HTML.document.body).append(
                 '<div id="header">' +
-                    '<span id="score-board"></span>' +
+                '<span id="score-board"></span>' +
                 '</div>' +
                 '<div id="content"></div>'
             );
-            scoreBoard = $('#score-board');
-            content = $('#content');
+            scoreBoard = jQuery.find('#score-board');
+            content = jQuery.find('#content');
 
             // Create map level in content area
             this.level = new Level(content);
 
             // Display welcome message
-            Message.show('Welcome to Snake TypeScript', 'press any key or click to start');
+            Message.show('Welcome to Snake JSX', 'press any key or click to start');
 
             this.initStartEvents();
 
@@ -64,12 +110,12 @@ class Game {
 
     }
 
-    function startGame() {
+    function startGame() : void {
 
         // Key events
-        $(document).unbind().keydown((e) => {
+        jQuery.find(HTML.document).unbind().keydown(function(e: variant) {
 
-            var key = e.keyCode;
+            var key : variant = e.keyCode;
 
             // Change direction
             if (key == Direction.left ||
@@ -88,12 +134,12 @@ class Game {
         });
 
         // Restart on click
-        $(this.level.canvas).click(() => {
-           this.paused = true;
-           if (confirm('Are you sure you want to restart?')) {
-               this.paused = false;
-               this.startGame();
-           }
+        jQuery.find(this.level.canvas).click(function() {
+            this.paused = true;
+            if (confirm('Are you sure you want to restart?')) {
+                this.paused = false;
+                this.startGame();
+            }
         });
 
         this.reset();
@@ -101,11 +147,11 @@ class Game {
 
     }
 
-    function togglePause() {
+    function togglePause() : void {
         this.paused = !this.paused;
     }
 
-    private function update() {
+    function update() : void {
 
         if (this.paused) return;
 
@@ -118,7 +164,7 @@ class Game {
         // Wall/Tail collision, Game Over!
         if (snake.wallCollision || snake.tailCollision) {
             if (this.over == 0) this.end();
-            this.over++
+            this.over++;
         }
 
         // Food collision
@@ -132,7 +178,7 @@ class Game {
             // Increase speed
             if (this.speed <= Settings.maxSpeed) this.speed += Settings.speedIncrement;
             clearInterval(this.interval);
-            this.interval = setInterval(() => this.renderAll(), 1000 / this.speed);
+            this.interval = setInterval(function() { this.renderAll() }, 1000 / this.speed);
 
             // Display score, higher scores for faster speeds
             this.score += Settings.scoreMultiplier * ((this.speed - Settings.startSpeed) + 1);
@@ -142,14 +188,14 @@ class Game {
 
     }
 
-    private function renderAll() {
+    function renderAll() : void{
         this.level.render();
         this.snake.render();
         this.update();
         this.food.render();
     }
 
-    private function reset() {
+    function reset() : void{
         this.snake = new Snake(this.level);
         this.food = new Food(this.level);
         this.direction = Direction.right;
@@ -157,21 +203,21 @@ class Game {
         this.over = 0;
         this.speed = Settings.startSpeed;
         if (this.interval !== undefined)  clearInterval(this.interval);
-        this.interval = setInterval(() => this.renderAll(), 1000 / this.speed);
+        this.interval = setInterval(function() { this.renderAll() }, 1000 / this.speed);
         this.score = 0;
     }
 
-    private function end() {
+    function end() : void {
         clearInterval(this.interval);
         Message.show('Game Over', 'press any key or click to try again');
-        $(document).unbind();
+        jQuery.find(HTML.document).unbind();
         this.initStartEvents();
     }
 
-    private function initStartEvents() {
-        $(document)
-        .click(() => this.startGame())
-        .keypress(() => this.startGame());
+    function initStartEvents() : void {
+        jQuery.find(HTML.document)
+            .click(function() { this.startGame() })
+            .keypress(function() { this.startGame() });
     }
 
 }
@@ -218,9 +264,10 @@ class Point {
  */
 class Level {
 
-    var target : JQuery;
-    var canvas : HTMLCanvasElement;
-    var context : CanvasRenderingContext2D;
+    // No type definitions :(
+    /*var target : variant;
+    var canvas : variant;
+    var context : variant;*/
 
     get width() : number {
         return this.canvas.width;
@@ -229,11 +276,11 @@ class Level {
         return this.canvas.height;
     }
 
-    function constructor(target: JQuery) {
+    function constructor(target) {
 
         // Create canvas in target element
         this.target = target;
-        this.canvas = target.append('<canvas>').children()[0];
+        this.canvas = jQuery.find(target).append('<canvas>').children()[0];
         this.context = this.canvas.getContext('2d');
 
         // Set width/height
@@ -244,7 +291,7 @@ class Level {
 
     }
 
-    function render() {
+    function render() : void {
         this.context.fillStyle = Settings.mapColor;
         this.context.fillRect(0, 0, this.width, this.height);
     }
@@ -279,7 +326,7 @@ class Snake {
         }
     }
 
-    function render() {
+    function render() : void {
         var size = Settings.size,
             context = this.level.context;
         for (var i = 0; i < this.parts.length; i++) {
@@ -291,12 +338,12 @@ class Snake {
 
     // Manipulation
 
-    function grow() {
+    function grow() : void {
         var newTail = new Point(this.tail.x, this.tail.y);
         this.parts.unshift(newTail);
     }
 
-    function move(direction : Direction) {
+    function move (direction : Direction) : void {
 
         var head = this.head,
             x = head.x,
@@ -322,9 +369,9 @@ class Snake {
             x = this.head.x,
             y = this.head.y;
         return x >= width / size ||
-               x <= -1 ||
-               y >= height / size ||
-               y <= -1;
+            x <= -1 ||
+            y >= height / size ||
+            y <= -1;
     }
 
     get tailCollision() : boolean {
@@ -359,7 +406,7 @@ class Food extends Point {
         super(x, y);
     }
 
-    function render() {
+    function render() : void {
         var size = Settings.size,
             context = this.level.context;
         context.fillStyle = Settings.foodColor;
@@ -373,17 +420,17 @@ class Food extends Point {
  */
 class Message {
 
-    static show(title: String, subTitle: String) {
-        $(document.body).append(
-             '<div id="message">' +
-                '<div id="message-modal"></div>' +
-                '<div id="message-panel"><h1>' + title + '</h1><br/><h4>' + subTitle + '</h4></div>' +
+    static show(title: String, subTitle: String) : void {
+        jQuery.find(HTML.document.body).append(
+            '<div id="message">' +
+            '<div id="message-modal"></div>' +
+            '<div id="message-panel"><h1>' + title + '</h1><br/><h4>' + subTitle + '</h4></div>' +
             '</div>'
         );
     }
 
-    static remove() {
-        $('#message').remove();
+    static remove() : void {
+        jQuery.find('#message').remove();
     }
 
 }

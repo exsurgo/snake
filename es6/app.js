@@ -12,7 +12,7 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
         scoreMultiplier: 3
     };
     var Game = function Game() {
-        var $__23 = this;
+        var $__16 = this;
         this.level = null;
         this.snake = null;
         this.food = null;
@@ -24,30 +24,30 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
         this.paused = false;
         $((function() {
             $(document.body).append('<div id="header">' + '<span id="score-board"></span>' + '</div>' + '<div id="content"></div>');
-            $__23.scoreBoard = $('#score-board');
-            $__23.content = $('#content');
-            $__23.level = new Level($__23.content);
+            $__16.scoreBoard = $('#score-board');
+            $__16.content = $('#content');
+            $__16.level = new Level($__16.content);
             Message.show('Welcome to Snake ES6/Traceur', 'press any key or click to start');
-            $__23.initStartEvents();
+            $__16.initStartEvents();
         }));
     };
     ($traceurRuntime.createClass)(Game, {
         startGame: function() {
-            var $__23 = this;
+            var $__16 = this;
             $(document).unbind().keydown((function(e) {
                 var key = e.keyCode;
                 if (key == Direction.left || key == Direction.up || key == Direction.right || key == Direction.down) {
-                    $__23.direction = key;
+                    $__16.direction = key;
                     e.preventDefault();
                 } else if (e.keyCode == KeyCode.enter || e.keyCode == KeyCode.space) {
-                    $__23.togglePause();
+                    $__16.togglePause();
                 }
             }));
             $(this.level.canvas).click((function() {
-                $__23.paused = true;
+                $__16.paused = true;
                 if (confirm('Are you sure you want to restart?')) {
-                    $__23.paused = false;
-                    $__23.startGame();
+                    $__16.paused = false;
+                    $__16.startGame();
                 }
             }));
             this.reset();
@@ -57,7 +57,7 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
             this.paused = !this.paused;
         },
         update: function() {
-            var $__23 = this;
+            var $__16 = this;
             if (this.paused)
                 return;
             var snake = this.snake,
@@ -76,20 +76,31 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
                     this.speed += Settings.speedIncrement;
                 clearInterval(this.interval);
                 this.interval = setInterval((function() {
-                    return $__23.renderAll();
+                    return $__16.renderAll();
                 }), 1000 / this.speed);
                 this.score += Settings.scoreMultiplier * ((this.speed - Settings.startSpeed) + 1);
                 this.scoreBoard.text('Score: ' + this.score);
             }
         },
+        animate: function() {
+            var $__16 = this;
+            if (this.interval)
+                clearInterval(this.interval);
+            this.interval = setInterval((function() {
+                return $__16.renderAll();
+            }), 1000 / this.speed);
+        },
         renderAll: function() {
-            this.level.render();
-            this.snake.render();
-            this.update();
-            this.food.render();
+            var $__16 = this;
+            requestAnimationFrame((function() {
+                $__16.level.render();
+                $__16.snake.render();
+                $__16.update();
+                $__16.food.render();
+            }));
         },
         reset: function() {
-            var $__23 = this;
+            var $__16 = this;
             this.snake = new Snake(this.level);
             this.food = new Food(this.level);
             this.direction = Direction.right;
@@ -99,7 +110,7 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
             if (this.interval !== undefined)
                 clearInterval(this.interval);
             this.interval = setInterval((function() {
-                return $__23.renderAll();
+                return $__16.renderAll();
             }), 1000 / this.speed);
             this.score = 0;
         },
@@ -110,11 +121,11 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
             this.initStartEvents();
         },
         initStartEvents: function() {
-            var $__23 = this;
+            var $__16 = this;
             $(document).click((function() {
-                return $__23.startGame();
+                return $__16.startGame();
             })).keypress((function() {
-                return $__23.startGame();
+                return $__16.startGame();
             }));
         }
     }, {});

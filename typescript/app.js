@@ -84,7 +84,6 @@ var Game = (function () {
     };
 
     Game.prototype.update = function () {
-        var _this = this;
         if (this.paused)
             return;
 
@@ -107,41 +106,45 @@ var Game = (function () {
             var tail = new Point(head.x, head.y);
             snake.parts.push(tail);
 
-            // Increase speed
-            if (this.speed <= Settings.maxSpeed)
-                this.speed += Settings.speedIncrement;
-            clearInterval(this.interval);
-            this.interval = setInterval(function () {
-                return _this.renderAll();
-            }, 1000 / this.speed);
-
             // Display score, higher scores for faster speeds
             this.score += Settings.scoreMultiplier * ((this.speed - Settings.startSpeed) + 1);
             this.scoreBoard.text('Score: ' + this.score);
+
+            // Increase speed
+            if (this.speed <= Settings.maxSpeed)
+                this.speed += Settings.speedIncrement;
+            this.animate();
         }
     };
 
+    Game.prototype.animate = function () {
+        var _this = this;
+        if (this.interval)
+            clearInterval(this.interval);
+        this.interval = setInterval(function () {
+            return _this.renderAll();
+        }, 1000 / this.speed);
+    };
+
     Game.prototype.renderAll = function () {
-        this.level.render();
-        this.snake.render();
-        this.update();
-        this.food.render();
+        var _this = this;
+        requestAnimationFrame(function () {
+            _this.level.render();
+            _this.snake.render();
+            _this.update();
+            _this.food.render();
+        });
     };
 
     Game.prototype.reset = function () {
-        var _this = this;
         this.snake = new Snake(this.level);
         this.food = new Food(this.level);
         this.direction = 39 /* right */;
         this.scoreBoard.text('Score: 0');
         this.over = 0;
         this.speed = Settings.startSpeed;
-        if (this.interval !== undefined)
-            clearInterval(this.interval);
-        this.interval = setInterval(function () {
-            return _this.renderAll();
-        }, 1000 / this.speed);
         this.score = 0;
+        this.animate();
     };
 
     Game.prototype.end = function () {
